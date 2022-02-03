@@ -1,0 +1,76 @@
+A. Write a program for multiple linear regression analysis.
+Step #1: Data Pre Processing
+a) Importing The Libraries.
+b) Importing the Data Set.
+c) Encoding the Categorical Data.
+d) Avoiding the Dummy Variable Trap.
+e) Splitting the Data set into Training Set and Test Set.
+Step #2: Fitting Multiple Linear Regression to the Training set
+Step #3: Predicting the Test set results.
+importnumpy as np
+importmatplotlib as mpl
+from mpl_toolkits.mplot3d import Axes3D
+importmatplotlib.pyplot as plt
+defgenerate_dataset(n):
+x = []
+y = []
+random_x1 = np.random.rand()
+random_x2 = np.random.rand()
+fori in range(n):
+x1 = i
+x2 = i/2 + np.random.rand()*n
+x.append([1, x1, x2])
+y.append(random_x1 * x1 + random_x2 * x2 + 1)
+returnnp.array(x), np.array(y)
+x, y = generate_dataset(200)
+mpl.rcParams['legend.fontsize'] = 12
+fig = plt.figure()
+ax = fig.gca(projection ='3d')
+ax.scatter(x[:, 1], x[:, 2], y, label ='y', s = 5)
+ax.legend()
+ax.view_init(45, 0)
+plt.show()
+defmse(coef, x, y): 
+PSIT1P1~~~~~ Research in Computing Practical
+M. Sc. [Information Technology] SEMESTER ~ I Teacher’s Reference Manual
+57
+returnnp.mean((np.dot(x, coef) - y)**2)/2
+def gradients(coef, x, y):
+returnnp.mean(x.transpose()*(np.dot(x, coef) - y), axis = 1)
+defmultilinear_regression(coef, x, y, lr, b1 = 0.9, b2 = 0.999, epsilon = 1e-8):
+prev_error = 0
+m_coef = np.zeros(coef.shape)
+v_coef = np.zeros(coef.shape)
+moment_m_coef = np.zeros(coef.shape)
+moment_v_coef = np.zeros(coef.shape)
+t = 0
+while True:
+error = mse(coef, x, y)
+if abs(error - prev_error) <= epsilon:
+break
+prev_error = error
+grad = gradients(coef, x, y)
+t += 1
+m_coef = b1 * m_coef + (1-b1)*grad
+v_coef = b2 * v_coef + (1-b2)*grad**2
+moment_m_coef = m_coef / (1-b1**t)
+moment_v_coef = v_coef / (1-b2**t)
+delta = ((lr / moment_v_coef**0.5 + 1e-8) *
+(b1 * moment_m_coef + (1-b1)*grad/(1-b1**t)))
+coef = np.subtract(coef, delta)
+returncoef
+coef = np.array([0, 0, 0])
+c = multilinear_regression(coef, x, y, 1e-1)
+fig = plt.figure()
+ax = fig.gca(projection ='3d')
+ax.scatter(x[:, 1], x[:, 2], y, label ='y',
+s = 5, color ="dodgerblue")
+ax.scatter(x[:, 1], x[:, 2], c[0] + c[1]*x[:, 1] + c[2]*x[:, 2],
+label ='regression', s = 5, color ="orange")
+ax.view_init(45, 0)
+ax.legend()
+PSIT1P1~~~~~ Research in Computing Practical
+M. Sc. [Information Technology] SEMESTER ~ I Teacher’s Reference Manual
+58
+plt.show()
+Output
